@@ -11,6 +11,7 @@ on:
 
 env:
   ARTIFACT_NAME: reports
+  SOURCES: ${{ secrets.SOURCES }}
 
 jobs:
   get-metrics:
@@ -50,9 +51,7 @@ jobs:
         run: npm start
         id: metrics
         env:
-          SOURCES: |
-            GitHub->https://github.com
-            Facebook->https://facebook.com
+          SOURCES: ${{ secrets.SOURCES }}
           GITHUB_TOKEN: ${{ github.token }}
           JOB_NAME: ${{ github.workflow }}
           ARTIFACT_NAME: ${{ env.ARTIFACT_NAME }}
