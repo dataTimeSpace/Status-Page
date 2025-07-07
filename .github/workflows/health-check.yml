@@ -11,7 +11,6 @@ on:
 
 env:
   ARTIFACT_NAME: reports
-  SOURCES: ${{ secrets.SOURCES }}
 
 jobs:
   get-metrics:
