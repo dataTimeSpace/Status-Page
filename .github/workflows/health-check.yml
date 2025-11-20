@@ -23,7 +23,7 @@ jobs:
       contents: read
       actions: read
       packages: write
-      issues: read
+      issues: write
     steps:
       - name: Checkout
         uses: actions/checkout@v4
