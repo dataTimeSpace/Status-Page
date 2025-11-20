@@ -83,6 +83,10 @@ const run = async () => {
       report = [];
     }
 
+    if (report.at(-1) && !result) {
+      createDowntimeIssue(name);
+    }
+
     // We push the value to the status array
     report.push({ timestamp: now, result });
     siteResult.set(name, report);
@@ -115,6 +119,19 @@ const run = async () => {
 
   const file = await artifactManager.generateArtifact(report);
   setOutput("file", file);
+}
+
+function createDowntimeIssue(name: string) {
+  const token = env.GITHUB_TOKEN;
+  const api = getOctokit(token);
+
+  api.rest.issues.create({
+    ...context.repo,
+    title: `${name} is down`,
+    body: ''
+  }).then(newIssue => {
+    console.log('filed issue', newIssue);
+  });
 }
 
 run().catch(setFailed);
