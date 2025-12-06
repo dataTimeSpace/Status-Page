@@ -84,7 +84,8 @@ const run = async () => {
     }
 
     if (report.at(-1) && !result) {
-      createDowntimeIssue(name);
+      console.log('would create downtime issue', report, result);
+      // createDowntimeIssue(name);
     }
 
     // We push the value to the status array
