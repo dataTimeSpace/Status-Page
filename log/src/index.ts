@@ -122,17 +122,17 @@ const run = async () => {
   setOutput("file", file);
 }
 
-function createDowntimeIssue(name: string) {
-  const token = env.GITHUB_TOKEN;
-  const api = getOctokit(token);
-
-  api.rest.issues.create({
-    ...context.repo,
-    title: `${name} is down`,
-    body: ''
-  }).then(newIssue => {
-    console.log('filed issue', newIssue);
-  });
-}
+// function createDowntimeIssue(name: string) {
+//   const token = env.GITHUB_TOKEN;
+//   const api = getOctokit(token);
+//
+//   api.rest.issues.create({
+//     ...context.repo,
+//     title: `${name} is down`,
+//     body: ''
+//   }).then(newIssue => {
+//     console.log('filed issue', newIssue);
+//   });
+// }
 
 run().catch(setFailed);
