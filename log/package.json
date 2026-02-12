@@ -24,7 +24,7 @@
     "@actions/core": "^2.0.2",
     "@actions/github": "^8.0.1",
     "@octokit/webhooks-types": "^7.5.1",
-    "axios": "^1.12.0",
+    "axios": "^1.13.5",
     "envsafe": "^2.0.3",
     "moment": "^2.30.1"
   },
