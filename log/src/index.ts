@@ -84,8 +84,7 @@ const run = async () => {
     }
 
     if (report.at(-1) && !result) {
-      console.log('would create downtime issue', report, result);
-      // createDowntimeIssue(name);
+      createDowntimeIssue(name);
     }
 
     // We push the value to the status array
@@ -122,17 +121,17 @@ const run = async () => {
   setOutput("file", file);
 }
 
-// function createDowntimeIssue(name: string) {
-//   const token = env.GITHUB_TOKEN;
-//   const api = getOctokit(token);
-//
-//   api.rest.issues.create({
-//     ...context.repo,
-//     title: `${name} is down`,
-//     body: ''
-//   }).then(newIssue => {
-//     console.log('filed issue', newIssue);
-//   });
-// }
+function createDowntimeIssue(name: string) {
+  const token = env.GITHUB_TOKEN;
+  const api = getOctokit(token);
+
+  api.rest.issues.create({
+    ...context.repo,
+    title: `${name} is down`,
+    body: ''
+  }).then(newIssue => {
+    console.log('filed issue', newIssue);
+  });
+}
 
 run().catch(setFailed);
