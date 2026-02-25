@@ -7,8 +7,8 @@
     "start": "node dist",
     "build": "ncc build --license LICENSE",
     "test": "jest",
-    "fix": "eslint --fix 'src/**/*'",
-    "lint": "eslint 'src/**/*'"
+    "fix": "eslint --fix",
+    "lint": "eslint"
   },
   "repository": {
     "type": "git",
