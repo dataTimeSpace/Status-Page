@@ -19,7 +19,7 @@
 			<Status {name} statuses={siteStatus} />
 		{/each}
 		{#if data.incidents?.length > 0}
-			<div class="divider" />
+			<div class="divider"></div>
 			<Incidents incidents={data.incidents} />
 		{/if}
 	</div>
