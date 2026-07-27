@@ -44,7 +44,7 @@
 	</div>
 
 	<div class="flex mt-2">
-		{#each statuses as { status, date }}
+		{#each statuses as { status, date } (date)}
 			<div
 				data-tip={date.toLocaleDateString('en-US', {
 					month: 'long',
