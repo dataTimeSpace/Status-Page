@@ -29,7 +29,8 @@
     "moment": "^2.30.1"
   },
   "overrides": {
-    "brace-expansion": "^5.0.8"
+    "brace-expansion@1": "1.1.16",
+    "brace-expansion@2": "2.1.2"
   },
   "devDependencies": {
     "@eslint/js": "^9.8.0",
