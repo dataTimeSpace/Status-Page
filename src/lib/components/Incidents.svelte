@@ -8,7 +8,7 @@
 <div class="">
 	<h1 class="text-2xl font-bold text-left">Recent incidents</h1>
 	<ul class="timeline timeline-vertical mt-4 lg:mt10">
-		{#each incidents as incident, i}
+		{#each incidents as incident, i (incident.date)}
 			<li>
 				{#if i > 0}
 					<hr class:bg-primary={incident.open} />

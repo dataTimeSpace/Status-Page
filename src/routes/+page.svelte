@@ -15,7 +15,7 @@
 </div>
 <main class="text-center mx-4 md:mx-12 py-4">
 	<div class="max-w-3xl min-w-[50vw] mx-auto">
-		{#each data.statusLog as [name, siteStatus]}
+		{#each data.statusLog as [name, siteStatus] (name)}
 			<Status {name} statuses={siteStatus} />
 		{/each}
 		{#if data.incidents?.length > 0}
