@@ -33,7 +33,7 @@ export class ArtifactManager {
       ...repo,
       workflow_id: workflow.id,
       status: "success",
-      per_page: 1
+      per_page: 10
     });
 
     if (runs.data.total_count === 0) {
@@ -41,9 +41,13 @@ export class ArtifactManager {
       return null;
     }
 
-    this.logger.info(`Found ${runs.data.total_count} runs: ${JSON.stringify(runs.data.workflow_runs.map(w => w.run_started_at))}`)
+    // The API doesn't guarantee an ordered response, so we sort the runs from newest to oldest
+    const sortedRuns = [...runs.data.workflow_runs].sort((a, b) =>
+      new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
 
-    for (const run of runs.data.workflow_runs) {
+    this.logger.info(`Found ${runs.data.total_count} runs: ${JSON.stringify(sortedRuns.map(w => w.run_started_at))}`)
+
+    for (const run of sortedRuns) {
       this.logger.info(`Searching for artifact in ${run.name}: ${run.id} - ${run.run_started_at}`);
       const artifacts = await this.api.rest.actions.listWorkflowRunArtifacts({
         ...repo,
@@ -59,31 +63,36 @@ export class ArtifactManager {
       if (!artifact) {
         this.logger.info(`Found no artifact in ${run.name}: ${run.id} named ${this.artifactName}`);
         this.logger.debug(`Available artifacts ${artifacts.data.artifacts.map(a => a.name)}`);
-        return null;
+        continue;
       }
 
-      const response = await this.api.rest.actions.downloadArtifact({
-        ...repo,
-        artifact_id: artifact.id,
-        archive_format: "zip"
-      });
-      await writeFile(`${this.artifactName}.zip`, Buffer.from(response.data as string));
-      execSync(`unzip -o ${this.artifactName}.zip -d ./logs`);
+      if (artifact.expired) {
+        this.logger.info(`Artifact ${artifact.id} of ${run.name}: ${run.id} has expired. Skipping it`);
+        continue;
+      }
 
-      this.logger.info("Artifact downloaded correctly");
-
-      const artifactLocation = resolve(`./logs/${this.artifactName}.json`);
-      this.logger.info("Artifact downloaded to " + artifactLocation);
-
-      const fileContent = await readFile(artifactLocation, "utf-8");
-      this.logger.debug(`Old artifact: ${fileContent}`);
       try {
+        const response = await this.api.rest.actions.downloadArtifact({
+          ...repo,
+          artifact_id: artifact.id,
+          archive_format: "zip"
+        });
+        await writeFile(`${this.artifactName}.zip`, Buffer.from(response.data as string));
+        execSync(`unzip -o ${this.artifactName}.zip -d ./logs`);
+
+        this.logger.info("Artifact downloaded correctly");
+
+        const artifactLocation = resolve(`./logs/${this.artifactName}.json`);
+        this.logger.info("Artifact downloaded to " + artifactLocation);
+
+        const fileContent = await readFile(artifactLocation, "utf-8");
+        this.logger.debug(`Old artifact: ${fileContent}`);
         const parsedFile: ReportFile = JSON.parse(fileContent);
         if (parsedFile.site.length > 0) {
           return parsedFile;
         }
       } catch (err) {
-        this.logger.warn("Couldn't read file");
+        this.logger.warn(`Couldn't read the artifact of run ${run.id}`);
         this.logger.error(err as Error);
       }
     }
